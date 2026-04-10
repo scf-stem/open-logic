@@ -1,12 +1,14 @@
 import { AppShell } from "@/components/app-shell";
+import { getCurrentUser } from "@/lib/auth";
 import { getLocale, translate } from "@/lib/i18n";
 
 export default async function AboutPage() {
   const locale = await getLocale();
+  const currentUser = await getCurrentUser();
   const t = (key: string) => translate(locale, key);
 
   return (
-    <AppShell locale={locale} pathname="/about">
+    <AppShell currentUser={currentUser} locale={locale} pathname="/about">
       <article className="page-card">
         <span className="eyebrow">{t("about.eyebrow")}</span>
         <h1>{t("about.title")}</h1>

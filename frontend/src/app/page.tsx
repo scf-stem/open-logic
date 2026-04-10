@@ -1,12 +1,14 @@
 import { AppShell } from "@/components/app-shell";
+import { getCurrentUser } from "@/lib/auth";
 import { getLocale, translate } from "@/lib/i18n";
 
 export default async function HomePage() {
   const locale = await getLocale();
+  const currentUser = await getCurrentUser();
   const t = (key: string) => translate(locale, key);
 
   return (
-    <AppShell locale={locale} pathname="/">
+    <AppShell currentUser={currentUser} locale={locale} pathname="/">
       <section className="hero">
         <div className="hero-copy">
           <span className="eyebrow">{t("home.eyebrow")}</span>

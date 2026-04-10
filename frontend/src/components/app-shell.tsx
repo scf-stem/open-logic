@@ -3,10 +3,17 @@ import type { ReactNode } from "react";
 
 import type { Locale } from "@/lib/config";
 import { translate } from "@/lib/i18n";
+import { LogoutButton } from "@/components/logout-button";
+
+type CurrentUser = {
+  id: number;
+  username: string;
+};
 
 type AppShellProps = {
   locale: Locale;
   pathname: string;
+  currentUser?: CurrentUser | null;
   children: ReactNode;
 };
 
@@ -14,7 +21,12 @@ function navLinkClass(active: boolean): string {
   return active ? "nav-link nav-link-active" : "nav-link";
 }
 
-export function AppShell({ locale, pathname, children }: AppShellProps) {
+export function AppShell({
+  locale,
+  pathname,
+  currentUser,
+  children,
+}: AppShellProps) {
   const t = (key: string, vars?: Record<string, string | number>) =>
     translate(locale, key, vars);
 
@@ -48,23 +60,35 @@ export function AppShell({ locale, pathname, children }: AppShellProps) {
             </Link>
           </div>
 
-          <div className="nav-actions">
-            <div className="locale-switcher">
-              <Link href={`/set-ui-locale/en?next=${encodeURIComponent(pathname)}`}>
-                EN
-              </Link>
-              <Link href={`/set-ui-locale/zh?next=${encodeURIComponent(pathname)}`}>
-                中文
-              </Link>
-            </div>
-            <div className="nav-auth">
-              <Link href="/login" className="btn btn-ghost">
-                {t("nav.login")}
-              </Link>
-              <Link href="/register" className="btn btn-primary">
-                {t("nav.register")}
-              </Link>
-            </div>
+            <div className="nav-actions">
+              <div className="locale-switcher">
+                <Link href={`/set-ui-locale/en?next=${encodeURIComponent(pathname)}`}>
+                  EN
+                </Link>
+                <Link href={`/set-ui-locale/zh?next=${encodeURIComponent(pathname)}`}>
+                  中文
+                </Link>
+              </div>
+              {currentUser ? (
+                <div className="nav-auth">
+                  <span className="user-badge">
+                    {currentUser.username[0]?.toUpperCase()}
+                  </span>
+                  <Link href="/profile" className="btn btn-ghost">
+                    {t("nav.profile")}
+                  </Link>
+                  <LogoutButton label={t("nav.logout")} />
+                </div>
+              ) : (
+                <div className="nav-auth">
+                  <Link href="/login" className="btn btn-ghost">
+                    {t("nav.login")}
+                  </Link>
+                  <Link href="/register" className="btn btn-primary">
+                    {t("nav.register")}
+                  </Link>
+                </div>
+              )}
           </div>
         </nav>
       </header>

@@ -1,13 +1,15 @@
 import { AppShell } from "@/components/app-shell";
 import { AuthForm } from "@/components/auth-form";
+import { getCurrentUser } from "@/lib/auth";
 import { getLocale, translate } from "@/lib/i18n";
 
 export default async function RegisterPage() {
   const locale = await getLocale();
+  const currentUser = await getCurrentUser();
   const t = (key: string) => translate(locale, key);
 
   return (
-    <AppShell locale={locale} pathname="/register">
+    <AppShell currentUser={currentUser} locale={locale} pathname="/register">
       <div className="auth-layout">
         <section className="auth-panel">
           <span className="eyebrow">{t("register.panel_eyebrow")}</span>

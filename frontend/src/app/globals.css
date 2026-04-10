@@ -116,6 +116,17 @@ a {
   align-items: center;
 }
 
+.user-badge {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 800;
+}
+
 .nav-link {
   padding: 10px 12px;
   border-radius: 10px;
