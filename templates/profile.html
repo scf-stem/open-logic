@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('profile.page_title') }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/views/content-page.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="profile-page">
+    <div class="surface-panel profile-feed">
+        <div class="profile-feed__header">
+            <span class="page-eyebrow">{{ t('profile.eyebrow') }}</span>
+            <h2 class="profile-feed__title">{{ t('profile.title') }}</h2>
+            <p class="profile-feed__copy">{{ t('profile.copy') }}</p>
+        </div>
+
+        <div id="userPosts" class="profile-posts">
+            <div class="profile-empty">{{ t('profile.loading') }}</div>
+        </div>
+    </div>
+
+    <aside class="surface-panel profile-sidebar">
+        <div class="profile-card">
+            <div class="profile-avatar">
+                <span id="profileAvatar">U</span>
+            </div>
+            <h2 id="profileName" class="profile-name">User</h2>
+            <p id="profileDate" class="profile-date">{{ t('profile.joined_on', date='2026-01-01') }}</p>
+
+            <div class="profile-divider"></div>
+
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <span id="postCount" class="profile-stat__value">0</span>
+                    <span class="profile-stat__label">{{ t('profile.posts') }}</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="profile-stat__value">0</span>
+                    <span class="profile-stat__label">{{ t('profile.points') }}</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
+<script src="{{ url_for('static', filename='js/views/profile.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('create.page_title') }}{% endblock %}
+
+{% block body_class %}create-page{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/views/create.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="compose-page">
+    <div class="surface-panel compose-hero">
+        <span class="page-eyebrow">{{ t('create.eyebrow') }}</span>
+        <h1 class="compose-hero__title">{{ t('create.title') }}</h1>
+        <p class="compose-hero__copy">{{ t('create.copy') }}</p>
+        <div class="compose-hero__meta">
+            <span class="tag">{{ t('create.tag_markdown') }}</span>
+            <span class="tag">{{ t('create.tag_snippets') }}</span>
+            <span class="tag">{{ t('create.tag_courses') }}</span>
+        </div>
+    </div>
+
+    <div class="surface-panel compose-card">
+        <form id="postForm" class="compose-form" novalidate>
+            <div class="compose-field">
+                <label for="title" class="compose-label">{{ t('create.field_title_label') }}</label>
+                <p class="compose-note">{{ t('create.field_title_note') }}</p>
+                <input type="text" class="compose-input" id="title" required placeholder="{{ t('create.field_title_placeholder') }}">
+            </div>
+
+            <div class="compose-field">
+                <label for="content" class="compose-label">{{ t('create.field_content_label') }}</label>
+                <p class="compose-note">{{ t('create.field_content_note') }}</p>
+                <textarea class="compose-textarea" id="content" rows="12" required placeholder="{{ t('create.field_content_placeholder') }}"></textarea>
+            </div>
+
+            <div class="compose-field">
+                <label for="tags" class="compose-label">{{ t('create.field_tags_label') }}</label>
+                <p class="compose-note">{{ t('create.field_tags_note') }}</p>
+                <select class="compose-select" id="tags" required>
+                    <option value="" disabled selected>{{ t('create.tags_default') }}</option>
+                    <option value="Python">Python</option>
+                    <option value="Web">Web</option>
+                    <option value="Arduino">Arduino</option>
+                    <option value="C++">C / C++</option>
+                    <option value="AI">AI</option>
+                    <option value="Other">{{ t('common.general') }}</option>
+                </select>
+            </div>
+
+            <div class="compose-actions btn-group">
+                <a href="/" class="btn btn-secondary">{{ t('create.back_home') }}</a>
+                <button type="submit" class="btn btn-primary">{{ t('create.submit') }}</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/views/post-create.js') }}"></script>
+{% endblock %}

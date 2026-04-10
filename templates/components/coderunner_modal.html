@@ -1,0 +1,53 @@
+<!-- Code Runner Modal Overlay -->
+<div id="scf-code-runner-modal" class="scf-modal-overlay">
+    <div class="scf-modal-content scf-debugger-overlay">
+        <div class="scf-modal-header">
+            <div class="scf-modal-title">
+                <span class="icon">⚡</span> {{ t('coderunner.title') }}
+            </div>
+            <div class="scf-modal-actions">
+                <select id="code-runner-lang" class="scf-select">
+                    <option value="python">Python 3.10</option>
+                    <option value="c">{{ t('coderunner.lang_c') }}</option>
+                </select>
+                <button class="btn btn-icon" id="close-runner-modal">✖</button>
+            </div>
+        </div>
+        
+        <div class="scf-modal-body">
+            <!-- Left Panel: Editor -->
+            <div class="scf-editor-panel">
+                <div class="panel-header">{{ t('coderunner.editor_title') }}</div>
+                <textarea id="code-editor" class="scf-textarea" spellcheck="false" placeholder="{{ t('coderunner.editor_placeholder') }}"></textarea>
+                <div class="editor-actions">
+                    <button id="run-code-btn" class="btn btn-primary">▶ {{ t('coderunner.run') }}</button>
+                    <button class="btn btn-outline" type="button">🔍 {{ t('coderunner.debug') }}</button>
+                </div>
+            </div>
+            
+            <!-- Right Panel: Output & Analysis -->
+            <div class="scf-analysis-panel">
+                <div class="panel-header">{{ t('coderunner.output_title') }}</div>
+                
+                <div id="terminal-output" class="scf-terminal">
+                    <div class="terminal-placeholder">{{ t('coderunner.ready') }}</div>
+                </div>
+                
+                <div id="diagnosis-container" class="scf-diagnosis hidden">
+                    <!-- Layer 1: Instant Feedback -->
+                    <div id="diag-layer-1" class="diag-layer instant-alert"></div>
+                    
+                    <!-- Layer 2: Deep Analysis (e.g. Memory Safety / ASan) -->
+                    <div id="diag-layer-2" class="diag-layer deep-analysis"></div>
+                    
+                    <!-- Layer 3: Resources & Fixes -->
+                    <div id="diag-layer-3" class="diag-layer suggested-fixes"></div>
+                </div>
+                
+                <div id="metrics-bar" class="scf-metrics hidden">
+                    <!-- Metrics will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

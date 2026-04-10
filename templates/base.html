@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="{{ ui_locale }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ t('home.page_title') }}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app-shell.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="app-body {% block body_class %}{% endblock %}">
+    {% set lang = language|default('python') %}
+    {% set lang_name = 'Python' if lang == 'python' else 'C语言' if lang == 'c' else 'Vibe Coding' %}
+    {% set lang_prefix = '/' + lang %}
+    {% set locale_next = request.full_path.rstrip('?') if request.query_string else request.path %}
+
+    <header class="site-shell__header">
+        <nav class="site-nav">
+            {% if request.path.startswith('/company') or request.path.startswith('/projects') %}
+            <a href="/company/agents" class="site-nav__brand">
+                <span class="site-nav__mark">AH</span>
+                <span class="site-nav__brand-copy">
+                    <span class="site-nav__brand-title">SCF Agent Hub</span>
+                    <span class="site-nav__brand-subtitle">Agent Workspace</span>
+                </span>
+            </a>
+            <div class="site-nav__links">
+                <a href="/company/creative" class="site-nav__link">创意助手</a>
+                <a href="/company/plans" class="site-nav__link">计划书</a>
+                <a href="/company/handbook/library" class="site-nav__link">工程手册</a>
+                <a href="/" class="site-nav__link">{{ t('common.back_home') }}</a>
+            </div>
+            <div class="locale-switcher" aria-label="{{ t('locale.switch') }}">
+                <a href="{{ url_for('set_ui_locale', locale='en', next=locale_next) }}" class="locale-switcher__link {% if ui_locale == 'en' %}is-active{% endif %}">{{ t('locale.english') }}</a>
+                <a href="{{ url_for('set_ui_locale', locale='zh', next=locale_next) }}" class="locale-switcher__link {% if ui_locale == 'zh' %}is-active{% endif %}">{{ t('locale.chinese') }}</a>
+            </div>
+            {% else %}
+            <a href="/" class="site-nav__brand">
+                <span class="site-nav__mark">OL</span>
+                <span class="site-nav__brand-copy">
+                    <span class="site-nav__brand-title">Open Logic</span>
+                    <span class="site-nav__brand-subtitle">{{ t('nav.brand_subtitle') }}</span>
+                </span>
+            </a>
+            <div class="site-nav__links">
+                <a href="/" class="site-nav__link {% if request.path == '/' %}is-active{% endif %}">{{ t('nav.home') }}</a>
+                <a href="/guidelines" class="site-nav__link {% if request.path == '/guidelines' %}is-active{% endif %}">{{ t('nav.guidelines') }}</a>
+                <a href="/about" class="site-nav__link {% if request.path == '/about' %}is-active{% endif %}">{{ t('nav.about') }}</a>
+            </div>
+            <div class="site-nav__actions">
+                <div class="locale-switcher" aria-label="{{ t('locale.switch') }}">
+                    <a href="{{ url_for('set_ui_locale', locale='en', next=locale_next) }}" class="locale-switcher__link {% if ui_locale == 'en' %}is-active{% endif %}">{{ t('locale.english') }}</a>
+                    <a href="{{ url_for('set_ui_locale', locale='zh', next=locale_next) }}" class="locale-switcher__link {% if ui_locale == 'zh' %}is-active{% endif %}">{{ t('locale.chinese') }}</a>
+                </div>
+                <div id="auth-buttons" class="site-nav__actions">
+                    <a href="/login" class="btn btn-ghost">{{ t('nav.login') }}</a>
+                    <a href="/register" class="btn btn-primary">{{ t('nav.register') }}</a>
+                </div>
+                <div id="user-profile" class="site-nav__profile">
+                    <div id="navAvatar" class="site-nav__avatar">U</div>
+                    <a href="/profile" class="site-nav__link {% if request.path == '/profile' %}is-active{% endif %}">{{ t('nav.profile') }}</a>
+                    <a href="#" id="logoutBtn" class="site-nav__logout">{{ t('nav.logout') }}</a>
+                </div>
+            </div>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="main-content {% block main_class %}{% endblock %}">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-shell__footer">
+        <div class="site-shell__footer-inner">
+            <div class="site-shell__footer-copy">
+                <span class="site-shell__footer-title">{{ t('footer.title1') }}</span>
+                <p>{{ t('footer.copy1') }}</p>
+            </div>
+            <div class="site-shell__footer-copy">
+                <span class="site-shell__footer-title">{{ t('footer.title2') }}</span>
+                <p>{{ t('footer.copy2') }}</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/c.min.js"></script>
+
+    <script>
+        window.CURRENT_LANGUAGE = '{{ lang }}';
+        window.APP_UI_LOCALE = {{ ui_locale|tojson }};
+        window.APP_TRANSLATIONS = {{ ui_messages|tojson }};
+    </script>
+
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

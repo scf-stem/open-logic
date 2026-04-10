@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('home.page_title') }}{% endblock %}
+
+{% block body_class %}home-view{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/views/home.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/views/coderunner.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="home-page">
+    <section class="home-hero">
+        <div class="home-hero__content">
+            <span class="page-eyebrow">{{ t('home.eyebrow') }}</span>
+            <h1 class="home-hero__title">
+                <span id="type-text-1">{{ t('home.line1') }}</span>
+                <span class="home-hero__title-accent">
+                    <span id="type-text-2">{{ t('home.line2') }}</span><span class="home-hero__blinker"></span>
+                </span>
+            </h1>
+            <p class="home-hero__copy">{{ t('home.copy') }}</p>
+            <div class="home-hero__actions">
+                <a href="/create" class="btn btn-primary">{{ t('home.ask') }}</a>
+                <a href="#posts" class="btn btn-secondary">{{ t('home.browse') }}</a>
+            </div>
+            <div class="home-hero__utility">
+                <button class="home-hero__quicklink" data-action="open-code-runner" type="button">{{ t('home.runner') }}</button>
+                <a href="/courses" class="home-hero__quicklink">{{ t('home.courses') }}</a>
+            </div>
+        </div>
+
+        <div class="home-hero__visual">
+            <div class="home-hero__panel">
+                <span class="home-hero__panel-title">{{ t('home.hero_card_eyebrow') }}</span>
+                <h3>{{ t('home.hero_card_title') }}</h3>
+                <p>{{ t('home.hero_card_copy') }}</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="home-section home-community" id="posts">
+        <aside class="surface-panel home-community__intro">
+            <span class="page-eyebrow">{{ t('home.community_eyebrow') }}</span>
+            <h2 class="home-section__title">{{ t('home.community_title') }}</h2>
+            <p>{{ t('home.community_copy') }}</p>
+            <a href="/create" class="btn btn-primary">{{ t('home.community_cta') }}</a>
+        </aside>
+
+        <div class="surface-panel home-community__feed">
+            <div class="home-filter" data-role="post-filter">
+                <button class="home-filter__tab tab-item active" data-tag="all" type="button">{{ t('home.filter_all') }}</button>
+                <button class="home-filter__tab tab-item" data-tag="python" type="button">{{ t('home.filter_python') }}</button>
+                <button class="home-filter__tab tab-item" data-tag="arduino" type="button">{{ t('home.filter_arduino') }}</button>
+                <button class="home-filter__tab tab-item" data-tag="web" type="button">{{ t('home.filter_web') }}</button>
+            </div>
+
+            <div class="posts-feed" id="postsContainer">
+                <div class="posts-empty-state">{{ t('home.posts_loading') }}</div>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% include 'components/coderunner_modal.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/views/coderunner.js') }}"></script>
+<script src="{{ url_for('static', filename='js/views/home.js') }}"></script>
+{% endblock %}

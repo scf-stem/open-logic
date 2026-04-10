@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('login.page_title') }}{% endblock %}
+
+{% block body_class %}auth-page{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/views/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+    <div class="auth-panel">
+        <span class="auth-panel__eyebrow">{{ t('login.panel_eyebrow') }}</span>
+        <h1 class="auth-panel__title">{{ t('login.panel_title') }}</h1>
+        <p class="auth-panel__copy">{{ t('login.panel_copy') }}</p>
+        <ul class="auth-panel__list">
+            <li>{{ t('login.panel_item1') }}</li>
+            <li>{{ t('login.panel_item2') }}</li>
+            <li>{{ t('login.panel_item3') }}</li>
+        </ul>
+    </div>
+
+    <div class="auth-card">
+        <div class="auth-card__header">
+            <h1 class="auth-card__title">{{ t('login.card_title') }}</h1>
+            <p class="auth-card__subtitle">{{ t('login.card_subtitle') }}</p>
+        </div>
+
+        <form id="authForm" class="auth-form" novalidate>
+            <div class="field">
+                <label for="username" class="field__label">{{ t('login.username_label') }}</label>
+                <div class="field__control">
+                    <input type="text" class="field__input" id="username" required placeholder="{{ t('login.username_placeholder') }}">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="password" class="field__label">{{ t('login.password_label') }}</label>
+                <div class="field__control">
+                    <input type="password" class="field__input" id="password" required placeholder="{{ t('login.password_placeholder') }}">
+                    <button type="button" class="pwd-toggle" data-password-toggle="password" aria-label="{{ t('common.show_password') }}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+                <p class="field__hint">{{ t('login.hint') }}</p>
+            </div>
+
+            <button type="submit" class="btn btn-primary auth-form__submit" id="loginBtn">{{ t('login.submit') }}</button>
+        </form>
+
+        <div class="auth-card__footer">
+            {{ t('login.footer_prompt') }} <a href="/register" class="auth-card__link">{{ t('login.footer_link') }}</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/views/auth.js') }}"></script>
+{% endblock %}

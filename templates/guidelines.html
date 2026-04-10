@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('guidelines.page_title') }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/views/content-page.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="content-page">
+    <article class="surface-panel content-card">
+        <header class="content-card__header">
+            <span class="page-eyebrow">{{ t('guidelines.eyebrow') }}</span>
+            <h1 class="content-card__title">{{ t('guidelines.title') }}</h1>
+            <p class="content-card__lead">{{ t('guidelines.lead') }}</p>
+        </header>
+
+        <div class="content-stack">
+            <section class="content-section">
+                <h3>{{ t('guidelines.respect_title') }}</h3>
+                <p>{{ t('guidelines.respect_body') }}</p>
+            </section>
+
+            <section class="content-section">
+                <h3>{{ t('guidelines.share_title') }}</h3>
+                <p>{{ t('guidelines.share_body') }}</p>
+            </section>
+
+            <section class="content-section">
+                <h3>{{ t('guidelines.privacy_title') }}</h3>
+                <p>{{ t('guidelines.privacy_body') }}</p>
+            </section>
+
+            <section class="content-section">
+                <h3>{{ t('guidelines.forbidden_title') }}</h3>
+                <ul class="content-list">
+                    <li>{{ t('guidelines.forbidden_item1') }}</li>
+                    <li>{{ t('guidelines.forbidden_item2') }}</li>
+                    <li>{{ t('guidelines.forbidden_item3') }}</li>
+                    <li>{{ t('guidelines.forbidden_item4') }}</li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="content-callout">{{ t('guidelines.callout') }}</div>
+    </article>
+</section>
+{% endblock %}

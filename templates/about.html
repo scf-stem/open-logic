@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('about.page_title') }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/views/content-page.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="content-page">
+    <article class="surface-panel content-card">
+        <header class="content-card__header">
+            <span class="page-eyebrow">{{ t('about.eyebrow') }}</span>
+            <h1 class="content-card__title">{{ t('about.title') }}</h1>
+            <p class="content-card__lead">{{ t('about.lead') }}</p>
+        </header>
+
+        <div class="content-stack">
+            <section class="content-section">
+                <h3>{{ t('about.mission_title') }}</h3>
+                <p>{{ t('about.mission_body') }}</p>
+            </section>
+
+            <section class="content-section">
+                <h3>{{ t('about.ai_title') }}</h3>
+                <ul class="content-list">
+                    <li>{{ t('about.ai_item1') }}</li>
+                    <li>{{ t('about.ai_item2') }}</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h3>{{ t('about.tg_title') }}</h3>
+                <p>{{ t('about.tg_body') }}</p>
+            </section>
+        </div>
+
+        <div class="content-actions">
+            <a href="/register" class="btn btn-primary">{{ t('about.cta_register') }}</a>
+            <a href="/" class="btn btn-secondary">{{ t('common.back_home') }}</a>
+        </div>
+    </article>
+</section>
+{% endblock %}

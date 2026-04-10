@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('courses.page_title') }}{% endblock %}
+
+{% block body_class %}course-page app-body--immersive{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/views/courses.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="course-workspace">
+    <nav class="course-workspace__nav">
+        <a href="/" class="course-workspace__brand">
+            <span class="course-workspace__brand-mark">CL</span>
+            <span class="course-workspace__brand-copy">
+                <strong>Code Learn</strong>
+                <span>{{ t('courses.brand_subtitle') }}</span>
+            </span>
+        </a>
+        <div class="course-workspace__links">
+            <a href="#" class="course-workspace__link is-active">{{ t('courses.nav_tutorials') }}</a>
+            <a href="#" class="course-workspace__link">{{ t('courses.nav_practice') }}</a>
+            <a href="#" class="course-workspace__link">{{ t('courses.nav_problems') }}</a>
+            <a href="/" class="course-workspace__link">{{ t('common.back_home') }}</a>
+        </div>
+        <div class="course-workspace__actions">
+            <div class="course-workspace__tracks">
+                <button class="track-btn active" data-track="python">{{ t('courses.track_python') }}</button>
+                <button class="track-btn" data-track="c">{{ t('courses.track_c') }}</button>
+                <button class="track-btn" data-track="vibe">{{ t('courses.track_vibe') }}</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="course-workspace__body">
+        <div class="tutorial-panel" id="tutorial-panel">
+            <div class="tutorial-panel__header">
+                <span class="tutorial-panel__eyebrow">{{ t('courses.panel_eyebrow') }}</span>
+                <h2 class="tutorial-panel__title">{{ t('courses.panel_title') }}</h2>
+                <p class="tutorial-panel__copy">{{ t('courses.panel_copy') }}</p>
+            </div>
+            <div class="tutorial-scroll">
+                <div class="tutorial-content" id="markdown-container">
+                    <div class="course-placeholder">{{ t('courses.loading') }}</div>
+                </div>
+            </div>
+            <div class="navigator" id="lesson-nav">
+                <button id="prev-lesson">← {{ t('courses.prev') }}</button>
+                <span id="lesson-progress">1 / 1</span>
+                <button id="next-lesson">{{ t('courses.next') }} →</button>
+            </div>
+        </div>
+
+        <div class="runner-panel">
+            <div class="runner-header">
+                <div class="runner-header__title">
+                    <strong>💻 {{ t('courses.runner_title') }}</strong>
+                    <span>{{ t('courses.runner_subtitle') }}</span>
+                </div>
+                <div class="runner-actions">
+                    <button class="btn btn-clear" id="clear-code">{{ t('courses.clear_code') }}</button>
+                    <button class="btn btn-run" id="run-code">▶ {{ t('courses.run') }}</button>
+                </div>
+            </div>
+            <div class="editor-wrapper">
+                <textarea id="code-editor"></textarea>
+            </div>
+            <div class="terminal-wrapper">
+                <div class="terminal-header">
+                    <span class="terminal-header__title">● {{ t('courses.output_title') }}</span>
+                    <a href="#" id="clear-output" class="terminal-header__action">{{ t('courses.clear_output') }}</a>
+                </div>
+                <div class="terminal-output" id="terminal-out">{{ t('courses.output_placeholder') }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const t = (key, fallback, vars) => window.appT(key, fallback, vars);
+    const editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+        mode: 'python',
+        theme: 'dracula',
+        lineNumbers: true,
+        indentUnit: 4,
+        matchBrackets: true,
+        autoCloseBrackets: true
+    });
+
+    editor.setValue(t('courses.python_template'));
+
+    let currentTrack = 'python';
+    let currentLesson = 1;
+    let totalLessons = 1;
+
+    const renderContainer = document.getElementById('markdown-container');
+    const outContainer = document.getElementById('terminal-out');
+    const progressEl = document.getElementById('lesson-progress');
+    const btnPrev = document.getElementById('prev-lesson');
+    const btnNext = document.getElementById('next-lesson');
+
+    async function loadLesson(track, id) {
+        renderContainer.innerHTML = `<div class="course-placeholder">${t('courses.loading')}</div>`;
+        try {
+            const res = await fetch(`/api/courses/lesson/${track}/${id}`);
+            const payload = await res.json();
+
+            if (payload.code === 200) {
+                const badge = `<span class="lesson-badge">${t('courses.chapter_badge', '', { id })}</span>\n\n`;
+                renderContainer.innerHTML = marked.parse(badge + payload.data.content);
+
+                renderContainer.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+
+                document.getElementById('tutorial-panel').scrollTop = 0;
+
+                totalLessons = payload.data.total;
+                currentLesson = payload.data.current;
+
+                progressEl.textContent = `${currentLesson} / ${totalLessons}`;
+                btnPrev.disabled = currentLesson <= 1;
+                btnNext.disabled = currentLesson >= totalLessons;
+            } else {
+                renderContainer.innerHTML = `<div class="course-placeholder">${payload.message}</div>`;
+            }
+        } catch (e) {
+            renderContainer.innerHTML = `<div class="course-placeholder">${t('courses.network_failed')}</div>`;
+        }
+    }
+
+    document.querySelectorAll('.track-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelector('.track-btn.active').classList.remove('active');
+            btn.classList.add('active');
+
+            currentTrack = btn.dataset.track;
+            currentLesson = 1;
+
+            if (currentTrack === 'c') {
+                editor.setOption('mode', 'text/x-csrc');
+                editor.setValue(t('courses.c_template'));
+            } else {
+                editor.setOption('mode', 'python');
+                editor.setValue(t('courses.python_template'));
+            }
+
+            outContainer.className = 'terminal-output';
+            outContainer.textContent = t('courses.output_placeholder');
+
+            loadLesson(currentTrack, currentLesson);
+        });
+    });
+
+    btnPrev.addEventListener('click', () => { if (currentLesson > 1) loadLesson(currentTrack, currentLesson - 1); });
+    btnNext.addEventListener('click', () => { if (currentLesson < totalLessons) loadLesson(currentTrack, currentLesson + 1); });
+
+    document.getElementById('run-code').addEventListener('click', async () => {
+        const code = editor.getValue();
+        if (!code.trim()) return;
+
+        outContainer.className = 'terminal-output has-content';
+        outContainer.textContent = t('courses.running');
+
+        try {
+            const res = await fetch('/api/run', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    language: currentTrack === 'c' ? 'c' : 'python',
+                    code: code
+                })
+            });
+            const data = await res.json();
+
+            let isSuccess = false;
+            let outputText = '';
+
+            if (data.code === 200) {
+                isSuccess = true;
+                outputText = data.output;
+            } else if (data.execution && data.execution.status) {
+                isSuccess = data.execution.status === 'success';
+                outputText = data.execution.stdout || '';
+                if (!isSuccess) {
+                    outputText = data.execution.stderr || outputText || t('common.error_occurred');
+                }
+            } else {
+                outputText = data.output || data.message || t('common.error_occurred');
+            }
+
+            if (isSuccess) {
+                outContainer.textContent = outputText || t('courses.no_output');
+                outContainer.classList.remove('error');
+            } else {
+                outContainer.textContent = outputText;
+                outContainer.classList.add('error');
+            }
+        } catch (e) {
+            outContainer.textContent = `${t('courses.network_failed')}: ${e.message}`;
+            outContainer.classList.add('error');
+        }
+    });
+
+    document.getElementById('clear-code').addEventListener('click', () => editor.setValue(''));
+    document.getElementById('clear-output').addEventListener('click', (e) => {
+        e.preventDefault();
+        outContainer.className = 'terminal-output';
+        outContainer.textContent = t('courses.output_placeholder');
+    });
+
+    loadLesson(currentTrack, currentLesson);
+});
+</script>
+{% endblock %}
