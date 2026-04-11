@@ -23,6 +23,7 @@ type Post = {
 
 type PostDetailViewProps = {
   postId: string;
+  initialPost?: Post | null;
   copy: {
     loadFailed: string;
     comment: string;
@@ -47,8 +48,12 @@ function simpleMarkdown(input: string): string {
     .replace(/\n/g, "<br />");
 }
 
-export function PostDetailView({ postId, copy }: PostDetailViewProps) {
-  const [post, setPost] = useState<Post | null>(null);
+export function PostDetailView({
+  postId,
+  initialPost = null,
+  copy,
+}: PostDetailViewProps) {
+  const [post, setPost] = useState<Post | null>(initialPost);
   const [message, setMessage] = useState("");
 
   const loadPost = useCallback(async () => {
@@ -63,8 +68,10 @@ export function PostDetailView({ postId, copy }: PostDetailViewProps) {
   }, [copy.loadFailed, postId]);
 
   useEffect(() => {
-    void loadPost();
-  }, [loadPost]);
+    if (!initialPost) {
+      void loadPost();
+    }
+  }, [initialPost, loadPost]);
 
   async function likePost() {
     const response = await fetch(`/api/posts/${postId}/like`, { method: "POST" });
